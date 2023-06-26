@@ -1,0 +1,65 @@
+## Create the Managed-fusion-agent Namespace
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: managed-fusion
+  labels:
+    misf.ibm.com/managed: "true"
+---
+
+## Create the operator-group
+---
+apiVersion: operators.coreos.com/v1
+kind: OperatorGroup
+metadata:
+ name: managed-fusion-og
+ namespace: managed-fusion
+spec:
+ selector:
+   matchLabels:
+     misf.ibm.com/managed: "true"
+
+---
+
+## Create the catalog-source
+---
+apiVersion: operators.coreos.com/v1alpha1
+kind: CatalogSource
+metadata:
+ name: managed-fusion-catsrc
+ namespace: managed-fusion
+spec:
+ sourceType: grpc
+ image: quay.io/resoni/managed-fusion-agent-index:4.12.3-31.05
+ displayName: Managed Fusion Agent
+
+---
+
+## Create the subscription
+---
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+ name: managed-fusion
+ namespace: managed-fusion
+spec:
+ channel: alpha
+ name: managed-fusion-agent
+ source: managed-fusion-catsrc
+ sourceNamespace: managed-fusion
+
+---
+
+## Create the secret
+---
+apiVersion: v1
+kind: Secret
+metadata:
+ name: managed-fusion-agent-config
+ namespace: managed-fusion
+type: Opaque
+data:
+ pager_duty_config: ICAgc29wRW5kcG9pbnQ6IDxwYWdlciBkdXR5IHNlcnZpY2UgZW5kcG9pbnQ+CiAgIHNlcnZpY2VLZXk6IDxwYWdlciBkdXR5IHNlcnZpY2Ugc2VjcmV0IGtleT4=
+ smtp_config: ICAgIGVuZHBvaW50OiBodHRwczovL3NvbWV0aGluZy50ZXN0OjgwODAKICAgIHVzZXJuYW1lOiA8c21wdCBzZXJ2aWNlIGFjY291bnQgdXNlcm5hbWU+CiAgICBwYXNzd29yZDogPHNtcHQgc2VydmljZSBhY2NvdW50IHBhc3N3b3JkPgogICAgZnJvbUFkZHJlc3M6IDxmb3JtIGFkZHJlc3MgZm9yIG91dGdvaW5nIGVtYWlscz4KICAgIG5vdGlmaWNhdGlvbkVtYWlsczoKICAgIC0gPGN1c3RvbWVyIGVtYWlsIGFkZHJlc3MgZm9yIHByb3ZpZGVyIG5vdGlmaWNhdGlvbnM+CiAgICAtIDxBbm90aGVyIGN1c3RvbWVyIGVtYWlsIGFkZHJlc3MgZm9yIHByb3ZpZGVyIG5vdGlmaWNhdGlvbnM+Cg==
+---
