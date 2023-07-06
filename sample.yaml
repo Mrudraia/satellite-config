@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    sample-check: "true"
+  name: test-namespace
+spec: {}
