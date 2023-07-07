@@ -48,6 +48,5 @@ spec:
  name: managed-fusion-agent
  source: managed-fusion-catsrc
  sourceNamespace: managed-fusion
-
 ---
 
